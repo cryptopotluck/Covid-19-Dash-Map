@@ -283,4 +283,4 @@ for i in [2]:
     )(toggle_navbar_collapse)
 
 if __name__ == "__main__":
-    app.run_server(debug=True, port=8898)
+    app.run_server(debug=True)
