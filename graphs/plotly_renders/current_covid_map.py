@@ -1,48 +1,27 @@
-import requests
-from pandas import DataFrame as df
 import plotly.graph_objects as go
-
+from graphs.plotly_renders.data import request_map_data
+from graphs.BadWayToRequestData.mathdro import map_data
+import plotly.express as px
+import time
+from graphs.objects import tabe_view_data_async
 
 def request_map():
-    r = requests.get('https://coronavirus-tracker-api.herokuapp.com/v2/locations')
+    r = map_data()
 
-    r = df(r.json()['locations'])
+    # for x in r['confirmed_size']:
+    #     print(x)
+    r['confirmed_size'] = r['confirmed'].apply(lambda x: x/500)
+    r['death_size'] = r['deaths'].apply(lambda x: x / 500)
+    r['recovered_size'] = r['recovered'].apply(lambda x: x / 500)
+    r['time'] = r['lastUpdate'].apply(lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(x)))
 
-    deaths = []
-    death_size = []
-    confirmed = []
-    confirmed_size = []
-    recovered = []
-    recovered_size = []
-    for x in r['latest']:
-        confirmed.append(x['confirmed'])
-        confirmed_size.append(float(x['confirmed']) / 500)
-        deaths.append(x['deaths'])
-        death_size.append(float(x['deaths']) / 100)
-        recovered.append(x['recovered'])
-        recovered_size.append(float(x['recovered']) / 500)
-
-    lon = []
-    lat = []
-    for x in r['coordinates']:
-        lon.append(x['longitude'])
-        lat.append(x['latitude'])
-
-    r['confirmed'] = df(confirmed)
-    r['confirmed_size'] = df(confirmed_size)
-    r['deaths'] = df(deaths)
-    r['death_size'] = df(death_size)
-    r['recovered'] = df(recovered)
-    r['recovered_size'] = df(recovered_size)
-    r['lat'] = df(lat)
-    r['lon'] = df(lon)
 
     map_confirmed = go.Scattermapbox(
         name='Confirmed Cases',
-        lon=r['lon'],
+        lon=r['long'],
         lat=r['lat'],
-        text=r['country'],
-        customdata=r.loc[:, ['confirmed', 'deaths', 'recovered']],
+        text=r['countryRegion'],
+        customdata=r.loc[:, ['confirmed']],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
         "Confirmed: %{customdata[0]}<br>" +
@@ -53,20 +32,21 @@ def request_map():
         marker=go.scattermapbox.Marker(
             size=r['confirmed_size'],
             color='mediumturquoise',
-            opacity=0.7
-        )
+            opacity=0.5
+        ),
+        opacity=0.5,
 
     )
 
     map_deaths = go.Scattermapbox(
         name='Deaths',
-        lon=r['lon'],
+        lon=r['long'],
         lat=r['lat'],
-        text=r['country'],
-        customdata=r.loc[:, ['confirmed', 'deaths', 'recovered']],
+        text=r['countryRegion'],
+        customdata=r.loc[:, ['deaths']],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
-        "Deaths: %{customdata[1]}<br>" +
+        "Deaths: %{customdata[0]}<br>" +
         "<extra></extra>",
         mode='markers',
         fillcolor='rgb(242, 177, 172)',
@@ -74,21 +54,22 @@ def request_map():
         marker=go.scattermapbox.Marker(
             size=r['death_size'],
             color='salmon',
-            opacity=0.7
-        )
+            opacity=0.5
+        ),
+        opacity=0.5,
     )
 
     map_recovered = go.Scattermapbox(
-        customdata=r.loc[:, ['confirmed', 'deaths', 'recovered']],
+        customdata=r.loc[:, ['recovered']],
         # deaths = r['deaths'],
         # recovered = r['recovered'],
         name='recovered',
-        lon=r['lon'],
+        lon=r['long'],
         lat=r['lat'],
-        text=r['country'],
+        text=r['countryRegion'],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
-        "Recovered: %{customdata[2]}<br>" +
+        "Recovered: %{customdata[0]}<br>" +
         "<extra></extra>",
         mode='markers',
         fillcolor='purple',
@@ -96,8 +77,8 @@ def request_map():
         marker=go.scattermapbox.Marker(
             size=r['recovered_size'],
             color='green',
-            opacity=0.7
-        )
+        ),
+        opacity=0.5,
     )
 
     layout = go.Layout(
@@ -117,7 +98,7 @@ def request_map():
         plot_bgcolor='rgba(0,0,0,0)'
     )
 
-    data = [map_confirmed, map_deaths, map_recovered]
+    data = [map_confirmed, map_recovered, map_deaths]
 
     fig = go.Figure(data=data, layout=layout)
 
@@ -125,7 +106,8 @@ def request_map():
 
 
 if __name__ == '__main__':
-    request_map()
+    print(request_map())
+
 
 
 
