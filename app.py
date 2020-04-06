@@ -22,6 +22,7 @@ PLOTLY_LOGO = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favata
 BS = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 
 app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
+server = app.server
 app.title = 'Covid-19 Map'
 
 # Master Data
