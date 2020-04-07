@@ -10,9 +10,9 @@ def request_map():
 
     # for x in r['confirmed_size']:
     #     print(x)
-    r['confirmed_size'] = r['confirmed'].apply(lambda x: x/500)
-    r['death_size'] = r['deaths'].apply(lambda x: x / 500)
-    r['recovered_size'] = r['recovered'].apply(lambda x: x / 500)
+    r['confirmed_size'] = r['confirmed'].apply(lambda x: x/1000)
+    r['death_size'] = r['deaths'].apply(lambda x: x / 1000)
+    r['recovered_size'] = r['recovered'].apply(lambda x: x / 1000)
     r['time'] = r['lastUpdate'].apply(lambda x: time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(x)))
 
 
@@ -94,6 +94,11 @@ def request_map():
                 ]
             }
         ],
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="#7f7f7f"
+        ),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)'
     )

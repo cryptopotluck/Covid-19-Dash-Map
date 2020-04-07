@@ -34,6 +34,11 @@ def global_growth_graph(data=fetch_historic.main()):
             plot_bgcolor='rgba(0,0,0,0)',
             barmode='stack',
             xaxis={'rangeslider_visible':True},
+            font=dict(
+                family="Courier New, monospace",
+                size=18,
+                color="#7f7f7f"
+            )
         )
 
         fig = go.Figure(data=graphs, layout=layout)

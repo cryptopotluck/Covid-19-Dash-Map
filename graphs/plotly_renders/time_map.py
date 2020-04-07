@@ -94,7 +94,12 @@ def request_map():
             }
         ],
         paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="#7f7f7f"
+        )
     )
 
     data = [map_confirmed, map_recovered, map_deaths]

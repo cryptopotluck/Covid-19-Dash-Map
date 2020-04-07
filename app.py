@@ -42,7 +42,7 @@ dropdown = dbc.DropdownMenu(
                              href='https://www.youtube.com/channel/UC-pBvv8mzLpj0k-RIbc2Nog?view_as=subscriber'),
         dbc.DropdownMenuItem("Potluck App", href='https://cryptopotluck.com/'),
         dbc.DropdownMenuItem(divider=True),
-        dbc.DropdownMenuItem("Project Github", href='https://github.com/cryptopotluck/alpha_vantage_tutorial'),
+        dbc.DropdownMenuItem("Project Github", href='https://github.com/cryptopotluck/Covid-19-Dash-Map'),
         dbc.DropdownMenuItem("Plotly / Dash", href='https://dash.plot.ly/'),
         dbc.DropdownMenuItem("Dash Bootstrap", href='https://dash-bootstrap-components.opensource.faculty.ai/'),
     ],
@@ -85,23 +85,27 @@ navbar = dbc.Navbar(
 )
 
 """Tab Body"""
-tab_usa_map = html.Div(
+tab_usa_map = html.Div(dbc.Card(
+    dbc.CardBody(
+
     [
         dbc.Row([
             dbc.Col(html.Div(""), width=3),
             dbc.Col(html.Div(dbc.Form([
                 dbc.FormGroup(
                     [
-                        dbc.Label("Slider", html_for="slider"),
+                        dbc.Label("Cases / Scale", html_for="slider"),
                         dcc.Slider(id="slider", min=1, max=1000, step=10, value=400),
                     ]
                 )])), width=3),
 
-            dbc.Col(html.H1(id='rate-slider'), width=3),
+            dbc.Col(html.H1(id='rate-slider',), width=3),
         ]),
-        dbc.Row([dbc.Col(html.Div(id='rate-scale')), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28')), style={'height': '100vh'})))]),
+        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28')), style={'height': '75vh'})), md=12, lg=6)]),
 
     ]
+    )
+)
 )
 
 
@@ -120,7 +124,7 @@ def total_data_card(request, header):
 tab_home = dbc.Card(
     dbc.CardBody(
         [
-            dbc.Col(dbc.Alert(["Stay up to date & Check Out the ", dbc.Badge("CDC Information", color="danger",
+            dbc.Col(dbc.Alert(["Quick Links: ", dbc.Badge("CDC Information", color="danger",
                                                                              href='https://www.cdc.gov/coronavirus/2019-ncov/',
                                                                              className="mr-1")], color="dark")),
             dbc.Row(
@@ -136,15 +140,16 @@ tab_home = dbc.Card(
                     dbc.Col(
                         html.Div(
                             dcc.Graph(figure=request_map(),
-                                      style={'height': '100vh'}))),
+                                      style={'height': '75vh'})), md=12, lg=6),
                     dbc.Col(
                         html.Div(
                             dcc.Graph(figure=global_growth_graph(),
-                                      style={'height': '100vh'})))]),
+                                      style={'height': '75vh'})), md=12, lg=6)]),
         ]
     ),
     className="mt-3",
 )
+
 
 tab_snapshot = dbc.Row(
     [
@@ -191,6 +196,16 @@ tabs = dbc.Tabs(
 # rows
 body = html.Div(
     [
+    dbc.Toast(
+            dbc.CardLink("Ask this Dataset", href="https://www.amadb.xyz"),
+            id="positioned-toast",
+            header="Have a Covid-19 Question?",
+            is_open=True,
+            dismissable=True,
+            icon="danger",
+            # top: 66 positions the toast below the navbar
+            style={"position": "fixed", "top": 66, "right": 10, "width": 350},
+        ),
         dbc.Row(html.P('')),
         dbc.Row(html.Div(tabs, style={'width': '100%'})),
     ]
@@ -227,10 +242,6 @@ def display_value(date):
               ])
 def display_worldmap(date):
     date_data = request_map_date(date)
-    print()
-    print('map')
-    print(date_data)
-    print()
 
     return dcc.Graph(figure=date_data, style={'height': '100vh'})
 
@@ -242,7 +253,7 @@ def display_worldmap(date):
 def display_worldmap(date):
     date_data = three_d(date)
 
-    return dcc.Graph(figure=date_data, style={'height': '100vh'})
+    return dcc.Graph(figure=date_data, style={'height': '85vh'})
 
 
 @app.callback(
@@ -255,7 +266,7 @@ def slider_scale_rate(value):
     data = fetch_today.main(value=value, usa_only=True)
     date_data = request_usa_map(data)
 
-    return dcc.Graph(figure=date_data, style={'height': '100vh'})
+    return dcc.Graph(figure=date_data, style={'height': '85vh'})
 
 
 @app.callback(
@@ -265,7 +276,7 @@ def slider_scale_rate(value):
               ])
 def slider_scale_rate(value):
 
-    return f'Scale: {value}'
+    return f'{value}'
 
 # we use a callback to toggle the collapse on small screens
 def toggle_navbar_collapse(n, is_open):

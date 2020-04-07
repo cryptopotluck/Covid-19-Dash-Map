@@ -80,18 +80,21 @@ def request_usa_map(data):
         mapbox_accesstoken=token,
         mapbox_center={"lat": 37.0902, "lon": -95.7129},
         paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="#7f7f7f"
+        )
     )
 
     data = [map_confirmed, map_recovered, map_deaths]
 
     fig = go.Figure(data=data, layout=layout)
-    fig = fig.update_layout(mapbox_center={"lat": 37.0902, "lon": -95.7129}, mapbox_zoom=3)
-
     return fig
 
 
 if __name__ == '__main__':
-    data = fetch_today.main()
+    data = fetch_today.main(value=1000)
     request_usa_map(data).show()
 

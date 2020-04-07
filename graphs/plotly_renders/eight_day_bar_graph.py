@@ -31,7 +31,12 @@ def animation_graph(data):
         height=800,
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
-        barmode='stack'
+        barmode='stack',
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="#7f7f7f"
+        )
     )
 
 
