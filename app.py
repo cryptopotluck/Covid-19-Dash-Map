@@ -85,30 +85,10 @@ navbar = dbc.Navbar(
 )
 
 """Tab Body"""
-tab_usa_map = html.Div(dbc.Card(
-    dbc.CardBody(
 
-    [
-        dbc.Row([
-            dbc.Col(html.Div(""), width=3),
-            dbc.Col(html.Div(dbc.Form([
-                dbc.FormGroup(
-                    [
-                        dbc.Label("Cases / Scale", html_for="slider"),
-                        dcc.Slider(id="slider", min=1, max=1000, step=10, value=400),
-                    ]
-                )])), width=3),
+# HOME
 
-            dbc.Col(html.H1(id='rate-slider',), width=3),
-        ]),
-        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28')), style={'height': '75vh'})), md=12, lg=6)]),
-
-    ]
-    )
-)
-)
-
-
+# Structure Top Cards
 def total_data_card(request, header):
     card_content = [
         dbc.CardHeader(header),
@@ -120,13 +100,25 @@ def total_data_card(request, header):
     ]
     return card_content
 
-
+# Home Tab
 tab_home = dbc.Card(
     dbc.CardBody(
         [
-            dbc.Col(dbc.Alert(["Quick Links: ", dbc.Badge("CDC Information", color="danger",
-                                                                             href='https://www.cdc.gov/coronavirus/2019-ncov/',
-                                                                             className="mr-1")], color="dark")),
+            # Quick Link Useful Information
+            dbc.Col(dbc.Alert([dbc.Row([
+
+                dbc.Button("Ask r/Covid-19", color="dark",
+                                                     href='https://www.amadb.xyz/',
+                                                     className="mr-1"),
+
+                dbc.Button("CDC Information", color="dark",
+                                                     href='https://www.cdc.gov/coronavirus/2019-ncov/',
+                                                     className="mr-1"),
+                dbc.Button("Order Masks", color="dark",
+                                                     href='https://www.n95breathingmask.com/',
+                                                     className="mr-1")
+
+            ])], color="dark")),
             dbc.Row(
                 [
                     dbc.Col(
@@ -148,6 +140,30 @@ tab_home = dbc.Card(
         ]
     ),
     className="mt-3",
+)
+
+
+tab_usa_map = html.Div(dbc.Card(
+    dbc.CardBody(
+
+    [
+        dbc.Row([
+            dbc.Col(html.Div(""), width=3),
+            dbc.Col(html.Div(dbc.Form([
+                dbc.FormGroup(
+                    [
+                        dbc.Label("Cases / Scale", html_for="slider"),
+                        dcc.Slider(id="slider", min=1, max=1000, step=10, value=400),
+                    ]
+                )])), width=3),
+
+            dbc.Col(html.H1(id='rate-slider',), width=3),
+        ]),
+        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28')), style={'height': '75vh'})), md=12, lg=6)]),
+
+    ]
+    )
+)
 )
 
 

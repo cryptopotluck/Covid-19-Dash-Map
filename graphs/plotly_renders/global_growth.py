@@ -21,7 +21,7 @@ def global_growth_graph(data=fetch_historic.main()):
                 x=data['reportDate'],
                 y=data['mainlandChina'],
                 line=dict(color='red'),
-                name='China is Lying Numbers',
+                name='China Cases',
                 fill='tozeroy',
 
             ),
