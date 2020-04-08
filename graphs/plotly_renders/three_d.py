@@ -2,60 +2,46 @@ import plotly.graph_objects as go
 import datetime
 import pandas as pd
 from graphs.objects import tabe_view_data_async
+from async_pull import fetch_to_date
 
 
-def three_d(start_date):
-    print(start_date)
-    print(type(start_date))
-    start = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
+def three_d(start_date, usa_only=False):
 
-    end = datetime.date.today() - start
+    r = fetch_to_date.main(start_date)
 
-    dates =[]
-    for x in range(int(end.days)):
 
-            search_date = str((datetime.date.today() - datetime.timedelta(days=1)) - datetime.timedelta(days=x))
-            dates.append(search_date)
+    r = pd.concat(r)
 
-    data = []
-    for x in dates:
-        print(x)
-        r = tabe_view_data_async.main(x)
+    dates = tuple(r['lastUpdate'])
 
-        data.append(r)
 
-    r = pd.concat(data)
-    print('------------------')
-    print([max(r['deaths'].values)])
-    print([max(r['deaths'].values)])
-    print('------------------')
-
-    confirmed = []
-    for x in r['confirmed']:
-        x = x + x
-        confirmed.append(x)
-
-    confirmed = go.Histogram(
+    confirmed = go.Bar(
         y=r['confirmed'],
-        x=r['lastUpdate'],
-        cumulative_enabled=True,
-        name='confirmed'
+        x=dates,
+        name='confirmed',
+        customdata=r.loc[:, ['confirmed', 'countryRegion']],
+        hovertemplate=
+        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
+        "<extra></extra>"
     )
-    deaths = go.Histogram(
-        x=r['lastUpdate'].values,
-        y=r['deaths'].values,
-        cumulative_enabled=True,
-        name='deaths'
-
-
+    deaths = go.Bar(
+        x=dates,
+        y=r['deaths'],
+        name='deaths',
+        customdata=r.loc[:, ['deaths', 'countryRegion']],
+        hovertemplate=
+        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
+        "<extra></extra>"
     )
-    recovered = go.Histogram(
-        x=r['lastUpdate'].values,
-        y=r['recovered'].values,
-        cumulative_enabled=True,
-        name='recovered'
 
-
+    recovered = go.Bar(
+        x=dates,
+        y=r['recovered'],
+        name='recovered',
+        customdata = r.loc[:, ['recovered', 'countryRegion']],
+                 hovertemplate =
+        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
+        "<extra></extra>"
     )
 
 
@@ -64,9 +50,16 @@ def three_d(start_date):
         plot_bgcolor='rgba(0,0,0,0)',
         font=dict(color='white'),
         barmode='stack',
-        title='Daily Growth Rate'
+        title='Daily Growth By Country',
+        xaxis={'rangeslider_visible': True,
+         'range': [start_date,
+                  str(datetime.date.today() - datetime.timedelta(days=1))
+                  ]
+    },
+
+
     )
-    fig = go.Figure(data=[confirmed, deaths, recovered], layout=layout)
+    fig = go.Figure(data=[deaths, recovered, confirmed], layout=layout)
 
     return fig
 

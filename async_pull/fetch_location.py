@@ -15,7 +15,7 @@ ssl_context = ssl.create_default_context()
 ssl_context.load_verify_locations(certifi.where())
 
 
-def main(location='', date=date, value=400, usa_only=False):
+def main(date=date, value=400, usa_only=False):
     # Create the asyncio Loop
     loop: AbstractEventLoop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)

@@ -159,7 +159,7 @@ tab_usa_map = html.Div(dbc.Card(
 
             dbc.Col(html.H1(id='rate-slider',), width=3),
         ]),
-        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28')), style={'height': '75vh'})), md=12, lg=6)]),
+        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28', usa_only=True)), style={'height': '75vh'})), md=12, lg=6)]),
 
     ]
     )
@@ -182,10 +182,11 @@ tab_snapshot = dbc.Row(
                  ]
                 ),
         # Body
-        dbc.Row([dbc.Col(html.Div(id='updated-world-map', style={'height': '100vh'}), style={'width': '100vw'}),
-                 dbc.Col(html.Div(id='barchart', style={'height': '100vh'}))]),
+        dbc.Row([
+            dbc.Col(html.Div(id='updated-world-map', style={'height': '85vh'}), style={'width': '100vw'}),
+            dbc.Col(html.Div(id='barchart', style={'height': '85vh'}))]),
         dbc.Row([]),
-        dbc.Row([dbc.Col(html.Div(), width=2), dbc.Col(html.Div(id='date-content')), dbc.Col(html.Div(), width=2)])
+        dbc.Row([dbc.Col(html.Div(),  md=2, lg=2), dbc.Col(html.Div(id='date-content'),  md=8, lg=8), dbc.Col(html.Div(),  md=2, lg=2)])
     ]
 )
 

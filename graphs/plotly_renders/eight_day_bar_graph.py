@@ -16,7 +16,7 @@ def animation_graph(data):
                             x = x['lastUpdate'],
                             y = x['confirmed'],
                             text=x['provinceState'],
-                            name=str(x['lastUpdate'][0][0:10]),
+                            name=str(x['lastUpdate'][0]),
                             customdata=x.loc[:, ['confirmed']],
                             hovertemplate =
                             "<b>%{text}</b><br><br>" +
@@ -46,5 +46,5 @@ def animation_graph(data):
     return fig
 
 if __name__ == '__main__':
-    animation_graph(data=fetch_to_date.main('2020-03-28')).show()
+    animation_graph(data=fetch_to_date.main('2020-03-28', usa_only=True)).show()
 
