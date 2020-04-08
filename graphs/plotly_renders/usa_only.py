@@ -45,9 +45,9 @@ def request_usa_map(data):
         marker=go.scattermapbox.Marker(
             size=data['death_size'],
             color='salmon',
-            opacity=0.5
+            opacity=0.75
         ),
-        opacity=0.5,
+        opacity=0.75,
     )
 
     map_recovered = go.Scattermapbox(
@@ -69,13 +69,12 @@ def request_usa_map(data):
             size=data['recovered_size'],
             color='green',
         ),
-        opacity=0.5,
+        opacity=0.75,
     )
     token = 'pk.eyJ1IjoiY3J5cHRvcG90bHVjayIsImEiOiJjazhtbTN6aHEwa3lwM25taW5qNTdicHAwIn0.xFsCTDqPE_0L-OHwv21qTg'
 
     layout = go.Layout(
         height=800,
-        mapbox_style="dark",
         autosize=True,
         mapbox_accesstoken=token,
         mapbox_center={"lat": 37.0902, "lon": -95.7129},
