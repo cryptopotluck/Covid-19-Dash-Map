@@ -5,61 +5,42 @@ from graphs.objects import tabe_view_data_async
 from async_pull import fetch_to_date
 
 
-def three_d(start_date, usa_only=False):
+def three_d(data):
+    print(data[-1]['lastUpdate'][0])
 
-    r = fetch_to_date.main(start_date)
-
-
-    r = pd.concat(r)
-
-    dates = tuple(r['lastUpdate'])
-
-
-    confirmed = go.Bar(
-        y=r['confirmed'],
-        x=dates,
-        name='confirmed',
-        customdata=r.loc[:, ['confirmed', 'countryRegion']],
-        hovertemplate=
-        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
-        "<extra></extra>"
-    )
-    deaths = go.Bar(
-        x=dates,
-        y=r['deaths'],
-        name='deaths',
-        customdata=r.loc[:, ['deaths', 'countryRegion']],
-        hovertemplate=
-        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
-        "<extra></extra>"
-    )
-
-    recovered = go.Bar(
-        x=dates,
-        y=r['recovered'],
-        name='recovered',
-        customdata = r.loc[:, ['recovered', 'countryRegion']],
-                 hovertemplate =
-        "%{customdata[1]} Confirmed: %{customdata[0]}<br>" +
-        "<extra></extra>"
-    )
-
+    graphs = []
+    for x in data:
+        graphs.append(go.Bar(
+            x=x['lastUpdate'],
+            y=x['confirmed'],
+            text=x['countryRegion'],
+            name=str(x['lastUpdate'][0]),
+            customdata=x.loc[:, ['confirmed']],
+            hovertemplate=
+            "<b>%{text}</b><br><br>" +
+            "Confirmed: %{customdata[0]}<br>" +
+            "<extra></extra>",
+        ))
 
     layout = go.Layout(
-        paper_bgcolor='#27293d',
+        paper_bgcolor='#060606',
         plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='white'),
         barmode='stack',
         title='Daily Growth By Country',
+        font=dict(
+            family="Courier New, monospace",
+            size=18,
+            color="#7f7f7f"
+        ),
         xaxis={'rangeslider_visible': True,
-         'range': [start_date,
-                  str(datetime.date.today() - datetime.timedelta(days=1))
-                  ]
+               'range': [data[-1]['lastUpdate'][0],
+                         str(datetime.date.today() - datetime.timedelta(days=1))
+                         ]
+
     },
 
-
     )
-    fig = go.Figure(data=[deaths, recovered, confirmed], layout=layout)
+    fig = go.Figure(data=graphs, layout=layout)
 
     return fig
 
@@ -67,6 +48,6 @@ def three_d(start_date, usa_only=False):
 
 
 if __name__ == '__main__':
-    three_d('2020-03-28').show()
-    print(three_d('2020-03-28'))
+    fetch_data = fetch_to_date.main('2020-03-28', usa_only=False)
+    date_data = three_d(fetch_data).show()
 

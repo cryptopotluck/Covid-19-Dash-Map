@@ -15,10 +15,13 @@ from graphs.plotly_renders.usa_only import request_usa_map
 from async_pull import fetch_today
 from async_pull import fetch_to_date
 from graphs.plotly_renders.global_growth import global_growth_graph
-from graphs.plotly_renders.eight_day_bar_graph import animation_graph
+from graphs.plotly_renders.eight_day_bar_graph import usa_barchart
+
+
 
 # table = tabe_view_async.main('2020-03-20')
-PLOTLY_LOGO = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars3.githubusercontent.com%2Fu%2F40912998%3Fs%3D400%26v%3D4&f=1&nofb=1.png"
+PLOTLY_LOGO = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbigredmarkets.com%2Fwp-content%2Fuploads%2F2020%2F03%2FCovid-19.png&f=1&nofb=1"
+
 BS = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 
 app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
@@ -59,7 +62,7 @@ navbar = dbc.Navbar(
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
                     [
-                        dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+                        dbc.Col(html.Img(src=PLOTLY_LOGO, height="40px")),
                         dbc.Col(dbc.NavbarBrand("Covid-19 Dashboard Course", className="ml-2")),
                     ],
                     align="center",
@@ -159,7 +162,7 @@ tab_usa_map = html.Div(dbc.Card(
 
             dbc.Col(html.H1(id='rate-slider',), width=3),
         ]),
-        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=animation_graph(data=fetch_to_date.main('2020-03-28', usa_only=True)), style={'height': '75vh'})), md=12, lg=6)]),
+        dbc.Row([dbc.Col(html.Div(id='rate-scale'), md=12, lg=6), dbc.Col(html.Div(dcc.Graph(figure=usa_barchart(data=fetch_to_date.main('2020-03-28', usa_only=True)), style={'height': '75vh'})), md=12, lg=6)]),
 
     ]
     )
@@ -167,7 +170,10 @@ tab_usa_map = html.Div(dbc.Card(
 )
 
 
-tab_snapshot = dbc.Row(
+tab_snapshot =dbc.Card(
+    dbc.CardBody(
+    [
+    dbc.Row(
     [
         # Header
         dbc.Row([dbc.Col(html.Div(), width=3),
@@ -189,6 +195,7 @@ tab_snapshot = dbc.Row(
         dbc.Row([dbc.Col(html.Div(),  md=2, lg=2), dbc.Col(html.Div(id='date-content'),  md=8, lg=8), dbc.Col(html.Div(),  md=2, lg=2)])
     ]
 )
+    ]))
 
 """Table"""
 
@@ -205,7 +212,7 @@ tabs = dbc.Tabs(
         dbc.Tab(
             "This tab's content is never seen", label="Recoveries", disabled=True
         ),
-        dbc.Tab(tab_snapshot, label="Snapshot & Curve"),
+        dbc.Tab(tab_snapshot, label="Global Snapshot"),
     ]
 )
 
@@ -214,9 +221,10 @@ tabs = dbc.Tabs(
 body = html.Div(
     [
     dbc.Toast(
-            dbc.CardLink("Ask this Dataset", href="https://www.amadb.xyz"),
+
+            dbc.CardLink("Check Out Project Update Video", href="https://youtu.be/etWtvJC-dtQ"),
             id="positioned-toast",
-            header="Have a Covid-19 Question?",
+            header="Learn How to Build this Dashboard",
             is_open=True,
             dismissable=True,
             icon="danger",
@@ -260,7 +268,7 @@ def display_value(date):
 def display_worldmap(date):
     date_data = request_map_date(date)
 
-    return dcc.Graph(figure=date_data, style={'height': '100vh'})
+    return dcc.Graph(figure=date_data, style={'height': '85vh'})
 
 
 @app.callback(Output('barchart', 'children'),
@@ -268,10 +276,10 @@ def display_worldmap(date):
                   Input('date-picker-single', 'date')
               ])
 def display_worldmap(date):
-    date_data = three_d(date)
+    fetch_data = fetch_to_date.main(date, usa_only=False)
+    date_data = three_d(fetch_data)
 
     return dcc.Graph(figure=date_data, style={'height': '85vh'})
-
 
 @app.callback(
             Output('rate-scale', 'children'),

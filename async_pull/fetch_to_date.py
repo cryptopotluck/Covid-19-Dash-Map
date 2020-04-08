@@ -88,26 +88,22 @@ async def clean_data(c_data, scale, usa_only):
     for x in r['lastUpdate']:
         if str(x[4]) != '-':
 
-           print(x[0:7])
-
            try:
-                print(datetime.datetime.strptime(str(x[0:7]), '%m/%d/%y').date())
                 x = datetime.datetime.strptime(str(x[0:7]), '%m/%d/%y').date()
-                print('%m/%d/%y')
-                print(x)
-                print()
+                # print('%m/%d/%y')
+                # print(x)
+                # print()
            except:
-                print(datetime.datetime.strptime(str(x[0:6]), '%m/%d/%y').date())
                 x = datetime.datetime.strptime(str(x[0:6]), '%m/%d/%y').date()
-                print('%m/%d/%y')
-                print(x)
-                print()
+                # print('%m/%d/%y')
+                # print(x)
+                # print()
 
         else:
-            print('other')
-            print(x)
-            print()
             x = datetime.datetime.strptime(str(x[0:10]), '%Y-%m-%d').date()
+            # print('other')
+            # print(x)
+            # print()
 
         dates.append(x)
 

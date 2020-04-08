@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import datetime
 import pandas as pd
 
-def animation_graph(data):
+def usa_barchart(data):
 
     data=data
 
@@ -46,5 +46,5 @@ def animation_graph(data):
     return fig
 
 if __name__ == '__main__':
-    animation_graph(data=fetch_to_date.main('2020-03-28', usa_only=True)).show()
+    usa_barchart(data=fetch_to_date.main('2020-03-28', usa_only=True)).show()
 
