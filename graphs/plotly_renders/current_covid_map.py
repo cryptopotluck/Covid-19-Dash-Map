@@ -5,7 +5,7 @@ import plotly.express as px
 import time
 from graphs.objects import tabe_view_data_async
 
-def request_map():
+def request_home_map():
     r = map_data()
 
     # for x in r['confirmed_size']:
@@ -111,7 +111,7 @@ def request_map():
 
 
 if __name__ == '__main__':
-    print(request_map())
+    print(request_home_map())
 
 
 

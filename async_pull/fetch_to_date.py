@@ -105,7 +105,7 @@ async def clean_data(c_data, scale, usa_only):
             # print(x)
             # print()
 
-        dates.append(x)
+        dates.append(x.strftime('%Y-%m-%d'))
 
     r['lastUpdate'] = pd.DataFrame(dates)
 

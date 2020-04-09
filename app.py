@@ -4,7 +4,9 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from graphs.plotly_renders.current_covid_map import request_map
+from graphs.plotly_renders.time_map import request_map
+from graphs.plotly_renders.current_covid_map import request_home_map
+
 from graphs.plotly_renders.date_selected_map import request_map_date
 import dash_table
 import dash_core_components as dcc
@@ -16,7 +18,12 @@ from async_pull import fetch_today
 from async_pull import fetch_to_date
 from graphs.plotly_renders.global_growth import global_growth_graph
 from graphs.plotly_renders.eight_day_bar_graph import usa_barchart
-
+import os
+from flask_caching import Cache
+import pandas as pd
+import redis
+import zlib
+import pickle
 
 
 # table = tabe_view_async.main('2020-03-20')
@@ -28,7 +35,60 @@ app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
 server = app.server
 app.title = 'Covid-19 Map'
 
+
+
+"""REDIS SETUP & DATA HOME"""
+# Setup Redis Server
+redis = redis.Redis(host='localhost', port=6379)
+
+TIMEOUT = 60
+
+cache = Cache(app.server, config={
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+})
+
+app.config.suppress_callback_exceptions = True
+
+@cache.memoize(timeout=TIMEOUT)
+def query_today(usa_only, scale):
+    date = str(datetime.date.today() - datetime.timedelta(days=1))
+
+
+    data = fetch_today.main(date=date, value=scale, usa_only=usa_only)
+
+    if usa_only == True:
+        usa_only = data['countryRegion'].str.contains('US')
+
+        data = data[usa_only]
+
+    data['confirmed_size'] = data.loc[:, 'confirmed'].apply(lambda x: int(x) / scale)
+    data['death_size'] = data.loc[:, 'deaths'].apply(lambda x: int(x) / scale)
+    data['recovered_size'] = data.loc[:, 'recovered'].apply(lambda x: int(x) / scale)
+    print('why you acting up data?')
+    print(data)
+    print(type(data))
+    print(redis.setex('USA_Today', TIMEOUT, zlib.compress(pickle.dumps(data))))
+    return redis.setex('USA_Today', TIMEOUT, zlib.compress(pickle.dumps(data)))
+
+@cache.memoize(timeout=TIMEOUT)
+def query_to_date(date='2020-03-24', usa_only=False, scale=500):
+
+    data = fetch_to_date.main(date=date, value=scale, usa_only=usa_only)
+
+    return redis.setex('TO_Date', TIMEOUT, zlib.compress(pickle.dumps(data)))
+
+
+
+def dataframe_usa_only_map(usa_only, scale):
+    return query_today(usa_only=usa_only, scale=scale)
+
+
+def dataframe_to_date(usa_only, scale, date):
+    return query_to_date(usa_only=usa_only, scale=scale, date=date)
+
 # Master Data
+home_graph= dataframe_to_date(usa_only=False, date=str(datetime.date.today()-datetime.timedelta(days=1)), scale=500)
 
 
 """Navbar"""
@@ -134,7 +194,7 @@ tab_home = dbc.Card(
                 [
                     dbc.Col(
                         html.Div(
-                            dcc.Graph(figure=request_map(),
+                            dcc.Graph(figure=request_home_map(),
                                       style={'height': '75vh'})), md=12, lg=6),
                     dbc.Col(
                         html.Div(
@@ -266,9 +326,21 @@ def display_value(date):
                   Input('date-picker-single', 'date')
               ])
 def display_worldmap(date):
-    date_data = request_map_date(date)
 
-    return dcc.Graph(figure=date_data, style={'height': '85vh'})
+    date_data = dataframe_to_date(date=date, usa_only=False, scale=500)
+    print('-_-_-')
+    print(date_data)
+
+
+    # map = request_map(date_data)
+
+    get_redis = pickle.loads(zlib.decompress(redis.get('TO_Date')))
+    print('getredis mother fucker')
+    print(get_redis)
+    # Add data to map
+    data = request_map(get_redis)
+
+    return dcc.Graph(figure=data, style={'height': '85vh'})
 
 
 @app.callback(Output('barchart', 'children'),
@@ -287,11 +359,16 @@ def display_worldmap(date):
                   Input('slider', 'value')
               ])
 def slider_scale_rate(value):
+    # Run Data
+    dataframe_usa_only_map(scale=value, usa_only=True)
+    # Fetch from Redis
+    get_redis = pickle.loads(zlib.decompress(redis.get('USA_Today')))
+    print('getredis mother fucker')
+    print(get_redis)
+    # Add data to map
+    data = request_usa_map(get_redis)
 
-    data = fetch_today.main(value=value, usa_only=True)
-    date_data = request_usa_map(data)
-
-    return dcc.Graph(figure=date_data, style={'height': '85vh'})
+    return dcc.Graph(figure=data, style={'height': '85vh'})
 
 
 @app.callback(
