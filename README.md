@@ -1,7 +1,10 @@
 ##Covid-19 Plotly Dashboard Project
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/cryptopotluck/Covid-19-Dash-Map/master?filepath=%2F)
+
 ![alt text](https://i.udemycdn.com/course/480x270/2597712_9552_2.jpg)
+View the Application Here: https://covid-dash-udemy.herokuapp.com/
+
 
 Follow along with this Free Step by Step Tutorial Video:
 
