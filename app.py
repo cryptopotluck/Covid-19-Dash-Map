@@ -24,7 +24,6 @@ import pandas as pd
 import redis
 import zlib
 import pickle
-from rq import Worker, Queue, Connection
 
 
 # table = tabe_view_async.main('2020-03-20')
@@ -415,6 +414,3 @@ for i in [2]:
 
 if __name__ == "__main__":
     app.run_server(debug=False)
-    with Connection(conn):
-        worker = Worker(map(Queue, listen))
-        worker.work()
