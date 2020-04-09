@@ -39,7 +39,7 @@ app.title = 'Covid-19 Map'
 
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
-port = int(os.environ.get('PORT', 5000))
+port = int(os.environ.get('PORT', 6379))
 redis = redis.Redis(host='localhost', port=port)
 
 TIMEOUT = 60
