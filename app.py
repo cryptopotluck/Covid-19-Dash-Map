@@ -40,6 +40,7 @@ app.title = 'Covid-19 Map'
 
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
+
 port = int(os.environ.get('PORT', 6379))
 listen = ['TO_Date', 'USA_Today']
 
@@ -49,9 +50,17 @@ cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
+
+# Run Heroku
+ON_HEROKU = os.environ.get('ON_HEROKU')
+os.environ.get('ON_HEROKU')
+
+if ON_HEROKU:
+    # get the heroku port
+    port = int(os.environ.get('PORT', 17995))  # as per OP comments default is 17995
+
 # Run Local
 redis_url = os.getenv('REDIS_URL', f'redis://localhost:{port}')
-# Run Heroku
 
 
 conn = redis.from_url(redis_url)
@@ -95,10 +104,10 @@ def dataframe_to_date(usa_only, scale, date):
     return query_to_date(usa_only=usa_only, scale=scale, date=date)
 
 # Master Data
-q = Queue(connection=conn)
-
-worker_to_date = q.enqueue(dataframe_to_date(date='2020-03-24', usa_only=False, scale=500), redis_url)
-
+# q = Queue(connection=conn)
+#
+# worker_to_date = q.enqueue(dataframe_to_date(date='2020-03-24', usa_only=False, scale=500), redis_url)
+#
 
 """Navbar"""
 # dropdown Items
