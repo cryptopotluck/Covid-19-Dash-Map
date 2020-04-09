@@ -42,7 +42,7 @@ app.title = 'Covid-19 Map'
 port = int(os.environ.get('PORT', 6379))
 redis = redis.Redis(host='localhost', port=port)
 
-TIMEOUT = 60
+TIMEOUT = 240
 
 cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
