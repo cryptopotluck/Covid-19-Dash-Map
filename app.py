@@ -268,8 +268,8 @@ tab_snapshot =dbc.Card(
                 ),
         # Body
         dbc.Row([
-            dbc.Col(html.Div(id='updated-world-map', style={'height': '85vh'}), style={'width': '100vw'}),
-            dbc.Col(html.Div(id='barchart', style={'height': '85vh'}))]),
+            dbc.Col(html.Div(id='updated-world-map', style={'height': '85vh'}), style={'width': '100vw'}, lg=6, md=12),
+            dbc.Col(html.Div(id='barchart', style={'height': '85vh'}), lg=6, md=12)]),
         dbc.Row([]),
         dbc.Row([dbc.Col(html.Div(),  md=2, lg=2), dbc.Col(html.Div(id='date-content'),  md=8, lg=8), dbc.Col(html.Div(),  md=2, lg=2)])
     ]
