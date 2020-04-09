@@ -45,7 +45,7 @@ TIMEOUT = 60
 
 cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
-    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', 'redis://localhost:6379')
 })
 
 app.config.suppress_callback_exceptions = True
