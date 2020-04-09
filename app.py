@@ -52,7 +52,7 @@ cache = Cache(app.server, config={
     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
 
-Run Heroku
+# Run Heroku
 ON_HEROKU = os.environ.get('ON_HEROKU')
 os.environ.get('ON_HEROKU')
 
