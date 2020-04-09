@@ -24,6 +24,7 @@ import pandas as pd
 import redis
 import zlib
 import pickle
+from rq import Worker, Queue, Connection
 
 
 # table = tabe_view_async.main('2020-03-20')
@@ -40,7 +41,10 @@ app.title = 'Covid-19 Map'
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
 port = int(os.environ.get('PORT', 6379))
+listen = ['TO_Date', 'USA_Today']
 redis = redis.Redis(host='localhost', port=port)
+
+conn = redis.from_url(redis)
 
 TIMEOUT = 240
 
@@ -70,14 +74,14 @@ def query_today(usa_only, scale):
     print(data)
     print(type(data))
     print(redis.setex('USA_Today', TIMEOUT, zlib.compress(pickle.dumps(data))))
-    return redis.setex('USA_Today', TIMEOUT, zlib.compress(pickle.dumps(data)))
+    return q.enqueue(redis.setex('USA_Today', TIMEOUT, zlib.compress(pickle.dumps(data))))
 
 @cache.memoize(timeout=TIMEOUT)
 def query_to_date(date='2020-03-24', usa_only=False, scale=500):
 
     data = fetch_to_date.main(date=date, value=scale, usa_only=usa_only)
 
-    return redis.setex('TO_Date', TIMEOUT, zlib.compress(pickle.dumps(data)))
+    return q.enqueue(redis.setex('TO_Date', TIMEOUT, zlib.compress(pickle.dumps(data))))
 
 
 
@@ -89,6 +93,7 @@ def dataframe_to_date(usa_only, scale, date):
     return query_to_date(usa_only=usa_only, scale=scale, date=date)
 
 # Master Data
+q = Queue(connection=conn)
 home_graph= dataframe_to_date(usa_only=False, date=str(datetime.date.today()-datetime.timedelta(days=1)), scale=500)
 
 
@@ -397,4 +402,8 @@ for i in [2]:
     )(toggle_navbar_collapse)
 
 if __name__ == "__main__":
+    with Connection(conn):
+        worker = Worker(map(Queue, listen))
+        worker.work()
+
     app.run_server(debug=False)
