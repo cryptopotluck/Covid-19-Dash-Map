@@ -43,13 +43,17 @@ app.title = 'Covid-19 Map'
 port = int(os.environ.get('PORT', 6379))
 listen = ['TO_Date', 'USA_Today']
 
-TIMEOUT = 240
+TIMEOUT = 140
 
 cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
+# Run Local
 redis_url = os.getenv('REDIS_URL', f'redis://localhost:{port}')
+# Run Heroku
+
+
 conn = redis.from_url(redis_url)
 app.config.suppress_callback_exceptions = True
 
@@ -92,6 +96,8 @@ def dataframe_to_date(usa_only, scale, date):
 
 # Master Data
 q = Queue(connection=conn)
+
+worker_to_date = q.enqueue(dataframe_to_date(date='2020-03-24', usa_only=False, scale=500), redis_url)
 
 
 """Navbar"""
