@@ -39,13 +39,14 @@ app.title = 'Covid-19 Map'
 
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
-redis = redis.Redis(host='localhost', port=6379)
+port = int(os.environ.get('PORT', 5000))
+redis = redis.Redis(host='localhost', port=port)
 
 TIMEOUT = 60
 
 cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
-    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', 'redis://localhost:6379')
+    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
 
 app.config.suppress_callback_exceptions = True
