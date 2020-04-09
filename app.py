@@ -49,7 +49,7 @@ cache = Cache(app.server, config={
     'CACHE_TYPE': 'redis',
     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
-redis_url = os.getenv('REDIS_URL', f'redis://h:p74ef83b9a32f4072e998356ef8a4db5deed27bb3eca7be63d2e3e88a1ec03183@ec2-34-196-57-74.compute-1.amazonaws.com:27589')
+redis_url = os.getenv('REDIS_URL', f'redis://localhost:{port}')
 conn = redis.from_url(redis_url)
 app.config.suppress_callback_exceptions = True
 
