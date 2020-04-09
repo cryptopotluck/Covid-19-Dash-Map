@@ -32,6 +32,8 @@ PLOTLY_LOGO = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fbigre
 BS = "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 
 app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
+
+
 server = app.server
 app.title = 'Covid-19 Map'
 
@@ -50,7 +52,7 @@ cache = Cache(app.server, config={
     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
 })
 
-# Run Heroku
+Run Heroku
 ON_HEROKU = os.environ.get('ON_HEROKU')
 os.environ.get('ON_HEROKU')
 
@@ -344,18 +346,13 @@ def display_value(date):
               ])
 def display_worldmap(date):
 
-    date_data = dataframe_to_date(date=date, usa_only=False, scale=500)
-    print('-_-_-')
-    print(date_data)
-
+    dataframe_to_date(date=date, usa_only=False, scale=500)
 
     # map = request_map(date_data)
-
     get_redis = pickle.loads(zlib.decompress(conn.get('TO_Date')))
-    print('getredis mother fucker')
-    print(get_redis)
+
     # Add data to map
-    data = request_map(get_redis)
+    data = request_map(get_redis[::-1])
 
     return dcc.Graph(figure=data, style={'height': '85vh'})
 

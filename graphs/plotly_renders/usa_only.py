@@ -23,9 +23,9 @@ def request_usa_map(data):
         marker=go.scattermapbox.Marker(
             size=data['confirmed_size'],
             color='mediumturquoise',
-            opacity=0.5
+            opacity=0.75
         ),
-        opacity=0.5,
+        opacity=0.75,
 
     )
 
@@ -77,6 +77,7 @@ def request_usa_map(data):
         height=800,
         autosize=True,
         mapbox_accesstoken=token,
+        mapbox_style="open-street-map",
         mapbox_center={"lat": 37.0902, "lon": -95.7129},
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
