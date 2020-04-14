@@ -20,7 +20,6 @@ from graphs.plotly_renders.global_growth import global_growth_graph
 from graphs.plotly_renders.eight_day_bar_graph import usa_barchart
 import os
 from flask_caching import Cache
-import pandas as pd
 import redis
 import zlib
 import pickle
@@ -42,17 +41,18 @@ app.title = 'Covid-19 Map'
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
 
-port = int(os.environ.get('PORT', 6379))
-listen = ['TO_Date', 'USA_Today']
-
-TIMEOUT = 140
-
-cache = Cache(app.server, config={
-    'CACHE_TYPE': 'redis',
-    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
-})
+# port = int(os.environ.get('PORT', 6379))
+# listen = ['TO_Date', 'USA_Today']
+#
+# TIMEOUT = 140
+#
+# cache = Cache(app.server, config={
+#     'CACHE_TYPE': 'redis',
+#     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
+# })
 
 # Run Heroku
+
 ON_HEROKU = os.environ.get('ON_HEROKU')
 os.environ.get('ON_HEROKU')
 
@@ -62,6 +62,7 @@ if ON_HEROKU:
 
 # Run Local
 redis_url = os.getenv('REDIS_URL', f'redis://localhost:{port}')
+
 
 
 conn = redis.from_url(redis_url)
@@ -301,7 +302,7 @@ body = html.Div(
     [
     dbc.Toast(
 
-            dbc.CardLink("Check Out Project Update Video", href="https://youtu.be/etWtvJC-dtQ"),
+            dbc.CardLink("Check Out Project Update Video", href="https://youtu.be/JoehvW-aUd4"),
             id="positioned-toast",
             header="Learn How to Build this Dashboard",
             is_open=True,
