@@ -41,18 +41,17 @@ app.title = 'Covid-19 Map'
 """REDIS SETUP & DATA HOME"""
 # Setup Redis Server
 
-# port = int(os.environ.get('PORT', 6379))
-# listen = ['TO_Date', 'USA_Today']
-#
-# TIMEOUT = 140
-#
-# cache = Cache(app.server, config={
-#     'CACHE_TYPE': 'redis',
-#     'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
-# })
+port = int(os.environ.get('PORT', 6379))
+listen = ['TO_Date', 'USA_Today']
+
+TIMEOUT = 140
+
+cache = Cache(app.server, config={
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_URL': os.environ.get('REDIS_URL', f'redis://localhost:{port}')
+})
 
 # Run Heroku
-
 ON_HEROKU = os.environ.get('ON_HEROKU')
 os.environ.get('ON_HEROKU')
 
