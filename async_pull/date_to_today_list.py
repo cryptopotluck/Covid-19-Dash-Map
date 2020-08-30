@@ -11,7 +11,7 @@ ssl_context = ssl.create_default_context()
 ssl_context.load_verify_locations(certifi.where())
 
 
-def main(date='2020-03-24', value=400, usa_only=False):
+def main(date='2020-08-24', value=400, usa_only=False):
     # Grab the Data passed through Through the function & turn into date object
     start = datetime.datetime.strptime(date, '%Y-%m-%d').date()
 
@@ -64,8 +64,9 @@ async def get_covid_data(loop: AbstractEventLoop, dates: list, value: int, usa_o
         data = pd.DataFrame(api)
         # Throw the Dataframe into our clean_data() Function
         finished_fetch = await clean_data(data, scale=value, usa_only=usa_only)
+        finished_everything = await  clean_date(finished_fetch)
         # Append & Return the Results
-        finished.append(finished_fetch)
+        finished.append(finished_everything)
 
     return finished
 
@@ -97,18 +98,31 @@ async def clean_data(c_data, scale, usa_only):
         print(colorama.Fore.YELLOW + f'{r}')
 
     # This is needed to plot the bubbles on the Plotly world map graph that we build
-    r['confirmed_size'] = r.loc[:, 'confirmed'].apply(lambda x: int(x) / scale)
-    r['death_size'] = r.loc[:, 'deaths'].apply(lambda x: int(x) / scale)
-    r['recovered_size'] = r.loc[:, 'recovered'].apply(lambda x: int(x) / scale)
+    confirmed_size = r.loc[:, 'confirmed'].apply(lambda x: int(x) / scale)
+    death_size = r.loc[:, 'deaths'].apply(lambda x: int(x) / scale)
+    recovered_size = r.loc[:, 'recovered'].apply(lambda x: int(x) / scale)
 
+    confirmed_size = confirmed_size
+    death_size = death_size
+    recovered_size = recovered_size
+
+    r.loc[:, 'confirmed_size'] = confirmed_size
+    r.loc[:, 'death_size'] = death_size
+    r.loc[:, 'recovered_size'] = recovered_size
+
+    # Return just the columns I need from the data
+    return r
+
+async def clean_date(c_data):
+    r=c_data
     # Demanding change; Loop Through the Dataframe Column that Holds the Date & Clean Data.
     dates = []
     for x in r['lastUpdate']:
         # The way I turn a str date value into a datetime object by checking the way the date was added to the api
         if str(x[4]) != '-':
-           try:
+            try:
                 x = datetime.datetime.strptime(str(x[0:7]), '%m/%d/%y').date()
-           except:
+            except:
                 x = datetime.datetime.strptime(str(x[0:6]), '%m/%d/%y').date()
 
         else:
@@ -118,13 +132,29 @@ async def clean_data(c_data, scale, usa_only):
 
     # Update Dataframe with the New Dates
     r['lastUpdate'] = pd.DataFrame(dates)
+
     # Set index as date
     r.set_index('lastUpdate')
 
-    # Return just the columns I need from the data
-    return r[['provinceState','countryRegion', 'lastUpdate', 'confirmed', 'confirmed_size', 'deaths', 'death_size', 'recovered', 'recovered_size', 'lat', 'long']]
+    for c, d in zip(r['confirmed'], r['deaths']):
+        if float(d[0]) == 0:
+            rate = float(c[0])
+            r.loc[:, 'rate'] = rate
+        else:
+            rate = float(c[0]) / float(d[0])
+            r.loc[:, 'rate'] = rate
+
+    return r[['provinceState','countryRegion', 'lastUpdate', 'confirmed', 'confirmed_size', 'deaths', 'death_size', 'recovered', 'recovered_size', 'lat', 'long', 'rate']]
+
+
 
 
 if __name__ == '__main__':
-    main(date='2020-03-24', usa_only=True)
-    # print(colorama.Fore.CYAN + f"symbol Finished: {main(date='2020-03-24')}", flush=True)
+    x = main(date='2020-03-24', usa_only=True)
+
+    print(colorama.Fore.CYAN + f"Returns: {x}", flush=True)
+
+
+
+
+

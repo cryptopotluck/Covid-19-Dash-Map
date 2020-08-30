@@ -3,15 +3,18 @@ import datetime
 import pandas as pd
 from async_pull import fetch_today
 import time
+from mapbox_token import mapbox_token
 
-
+token = mapbox_token
 def request_usa_map(data):
+    print('look here stupid')
+    print(data)
 
     map_confirmed = go.Scattermapbox(
         name='Confirmed Cases',
         lon=data['long'],
         lat=data['lat'],
-        text=data['countryRegion'],
+        text=data['countryRegion'] + ' ' + data['provinceState'],
         customdata=data.loc[:, ['confirmed']],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
@@ -33,7 +36,7 @@ def request_usa_map(data):
         name='Deaths',
         lon=data['long'],
         lat=data['lat'],
-        text=data['countryRegion'],
+        text=data['countryRegion'] + ' ' + data['provinceState'],
         customdata=data.loc[:, ['deaths']],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
@@ -57,7 +60,7 @@ def request_usa_map(data):
         name='recovered',
         lon=data['long'],
         lat=data['lat'],
-        text=data['countryRegion'],
+        text=data['countryRegion'] + ' ' + data['provinceState'],
         hovertemplate=
         "<b>%{text}</b><br><br>" +
         "Recovered: %{customdata[0]}<br>" +
@@ -71,7 +74,6 @@ def request_usa_map(data):
         ),
         opacity=0.75,
     )
-    token = 'pk.eyJ1IjoiY3J5cHRvcG90bHVjayIsImEiOiJjazhtbTN6aHEwa3lwM25taW5qNTdicHAwIn0.xFsCTDqPE_0L-OHwv21qTg'
 
     layout = go.Layout(
         height=800,

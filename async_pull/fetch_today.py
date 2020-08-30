@@ -3,7 +3,6 @@ import datetime
 from asyncio import AbstractEventLoop
 import aiohttp
 import colorama
-
 import pandas as pd
 import ssl
 import certifi
@@ -75,5 +74,10 @@ async def clean_data(data, scale, usa_only):
 
 
 if __name__ == '__main__':
+    start_script = main(date='2020-04-24')
+    print(colorama.Fore.CYAN + f"symbol Finished: {start_script}", flush=True)
 
-    print(colorama.Fore.CYAN + f"symbol Finished: {main(date='2020-03-24')}", flush=True)
+
+
+
+

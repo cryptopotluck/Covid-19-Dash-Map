@@ -8,17 +8,8 @@ import time
 
 def request_map(data):
 
-    print()
-    print()
-    print('THE FUCK ARE YOU DOING?')
-    print(data)
-    for r in data:
-        r['confirmed_size'] = r['confirmed'].apply(lambda x: int(x)/500)
-        r['death_size'] = r['deaths'].apply(lambda x: int(x) / 500)
-        r['recovered_size'] = r['recovered'].apply(lambda x: int(x) / 500)
-
-
     maps = []
+    print(data)
     for r in data:
 
         map_confirmed = go.Scattermapbox(

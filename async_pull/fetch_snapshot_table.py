@@ -59,7 +59,6 @@ async def get_covid_data(loop: AbstractEventLoop, dates: list):
 
 async def get_api(date: str) -> str:
 
-
     url = f'https://covid19.mathdro.id/api/daily/{date}'
     # print(x)
     # url = requests.get(f'https://covid19.mathdro.id/api/daily/{date}')
@@ -113,29 +112,9 @@ async def clean_data(c_data):
 
 
 if __name__ == '__main__':
-    print(main(selected_date='2020-03-20'))
-    # # print(main(selected_date='2020-03-20'))
-    #
-    #
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(main(selected_date='2020-03-20'))
-    #
-    # def drive(c):
-    #     while True:
-    #         try:
-    #             print('look here')
-    #             print(c)
-    #             print()
-    #             susp_val = c.send(None)
-    #             if susp_val is not None and susp_val[0] == 'sleep':
-    #                 time.sleep(susp_val[1])
-    #         except StopIteration as e:
-    #             return e.value
-
-
-    # fetch today news
-    # today_news_list = []
-    # for n in main(selected_date='2020-03-20'):
-    #     today_news_list.append(n)
-    #
-    # print(today_news_list)
+    print()
+    print()
+    for x in main(selected_date='2020-03-20').head():
+        print(x)
+    print()
+    print(main(selected_date='2020-03-20')['countryRegion'])

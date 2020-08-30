@@ -5,7 +5,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from graphs.plotly_renders.covid_map import request_map
+# from graphs.plotly_renders.covid_map import request_map
 import requests, base64
 from io import BytesIO
 import dash_core_components as dcc
@@ -13,12 +13,10 @@ import plotly.graph_objs as go
 from collections import Counter
 from graphs.BadWayToRequestData.data import total
 from graphs.BadWayToRequestData.mathdro import c_d_r_Stats, c_dates
-from graphs.dtale_data.build_dtale import dtale_test
-import dtale
 import pandas as pd
 
 
-def build_table(data=c_dates()):
+def build_table(data):
 
     headers = []
     for x in data.head():
@@ -37,15 +35,22 @@ def build_table(data=c_dates()):
 
     lastUpdate = c_dates()['lastUpdate'].values
 
+    lat = c_dates()['lat'].values
+
+    long = c_dates()['long'].values
+
     confirmed = c_dates()['confirmed'].values
 
     deaths = c_dates()['deaths'].values
 
     recovered = c_dates()['recovered'].values
 
+    active = c_dates()['active'].values
 
-    for p,region,l,c,d,r in zip(provinceState,countryRegion, lastUpdate, confirmed, deaths, recovered):
-        table_values.append(html.Tr([html.Td(p), html.Td(region),  html.Td(l),  html.Td(c),  html.Td(d),  html.Td(r)]))
+    combinedKey = c_dates()['combinedKey'].values
+
+    for o,f,m,t,d,fvc,rd in zip(provinceState, countryRegion, lastUpdate, lat, long, confirmed, deaths, recovered, active, combinedKey):
+        table_values.append(html.Tr([html.Td(o), html.Td(f),  html.Td(m),  html.Td(t),  html.Td(d),  html.Td(fvc), html.Td(rd)]))
         # print(c_dates()[x].values)
 
 

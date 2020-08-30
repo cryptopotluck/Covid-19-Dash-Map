@@ -5,8 +5,7 @@ import datetime
 import pandas as pd
 
 
-def global_growth_graph(data=fetch_historic.main()):
-        data = data
+def global_growth_graph(data):
 
         graphs = [
             go.Scatter(
