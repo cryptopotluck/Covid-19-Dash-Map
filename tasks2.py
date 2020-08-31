@@ -36,7 +36,7 @@ REDIS_KEYS = {"DATASET": 'DATASET', "DATE_UPDATED": "DATE_UPDATED"}
 """Start"""
 @celery_app.on_after_configure.connect
 def start_celery(**kwargs):
-        snapshot_table_data()
+        # snapshot_table_data()
         map_today_data(usa_only=False, scale=400)
         # home_animation_data()
         render_growth_rate_data()
@@ -101,34 +101,34 @@ def start_celery(**kwargs):
 
 
 # render table
-@celery_app.task
-def snapshot_table_data(date='2020-03-20'):
-        df_list = fetch_snapshot_table.main(date)
+# @celery_app.task
+# def snapshot_table_data(date='2020-03-20'):
+#         df_list = fetch_snapshot_table.main(date)
+#
+#         redis_instance.set(
+#             'table_data',
+#             json.dumps(
+#                 df_list.to_dict(),
+#                 # This JSON Encoder will handle things like numpy arrays
+#                 # and datetimes
+#                 cls=plotly.utils.PlotlyJSONEncoder,
+#             ),
+#         )
+#         # Save the timestamp that the dataframe was updated
+#         redis_instance.hset(
+#         REDIS_HASH_NAME, REDIS_KEYS["DATASET"], f'{str(datetime.datetime.now())}')
 
-        redis_instance.set(
-            'table_data',
-            json.dumps(
-                df_list.to_dict(),
-                # This JSON Encoder will handle things like numpy arrays
-                # and datetimes
-                cls=plotly.utils.PlotlyJSONEncoder,
-            ),
-        )
-        # Save the timestamp that the dataframe was updated
-        redis_instance.hset(
-        REDIS_HASH_NAME, REDIS_KEYS["DATASET"], f'{str(datetime.datetime.now())}')
-
-"""Start"""
-@celery_app.on_after_configure.connect
-def snapshot_table_task(sender, **kwargs):
-    print("----> setup_periodic_tasks")
-    sender.add_periodic_task(
-        45,  # seconds
-        # an alternative to the @app.task decorator:
-        # wrap the function in the app.task function
-        snapshot_table_data.s(),
-        name="snapshot_table_data",
-    )
+# """Start"""
+# @celery_app.on_after_configure.connect
+# def snapshot_table_task(sender, **kwargs):
+#     print("----> setup_periodic_tasks")
+#     sender.add_periodic_task(
+#         45,  # seconds
+#         # an alternative to the @app.task decorator:
+#         # wrap the function in the app.task function
+#         snapshot_table_data.s(),
+#         name="snapshot_table_data",
+#     )
 
 
 @celery_app.task
