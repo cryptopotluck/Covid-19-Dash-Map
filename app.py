@@ -299,9 +299,6 @@ tab_home = dbc.Card(
 
                 dbc.Button("CDC Information", color="dark",
                                                      href='https://www.cdc.gov/coronavirus/2019-ncov/',
-                                                     className="mr-1"),
-                dbc.Button("Order Masks", color="dark",
-                                                     href='https://www.n95breathingmask.com/',
                                                      className="mr-1")
 
             ])], color="dark")),
@@ -456,7 +453,7 @@ body = html.Div(
     [
     dbc.Toast(
 
-            dbc.CardLink("Check Out the Home Base", href="https://youtu.be/JoehvW-aUd4"),
+            dbc.CardLink("Check Out the Home Base", href="https://pipinstallpython.com"),
             id="positioned-toast",
             header="Learn How to Build this Dashboard",
             is_open=True,
