@@ -1,4 +1,4 @@
-aiohttp==3.6.2
+aiohttp==3.7.4
 amqp==2.5.2
 appnope==0.1.0
 argon2-cffi==20.1.0
