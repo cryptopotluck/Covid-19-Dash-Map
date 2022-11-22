@@ -73,7 +73,7 @@ parso==0.7.1
 pexpect==4.8.0
 pgeocode==0.2.1
 pickleshare==0.7.5
-Pillow==7.0.0
+Pillow==9.3.0
 plotly==4.5.4
 prometheus-client==0.8.0
 prompt-toolkit==3.0.6
